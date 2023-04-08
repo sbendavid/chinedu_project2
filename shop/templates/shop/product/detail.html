@@ -18,8 +18,12 @@
         <a href="{{ product.category.get_absolute_url }}">{{product.category }}</a>
       </h2>
       <p class="lead font-weight-bold">${{ product.price }}</p>
+      <form action="{% url 'cart:cart_add' product.id %}" method="post">
+        {{ cart_product_form }}
+        {% csrf_token %}
+        <input type="submit" value="Add to cart">
+      </form>
       <p class="lead">{{ product.description|linebreaks }}</p>
-      <button class="btn btn-primary">Add to Cart</button>
     </div>
   </div>
 </div>
