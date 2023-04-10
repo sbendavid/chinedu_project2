@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Pay by Credit Card{% endblock %}
+
+{% block content %}
+  <h1>Pay by Credit Card</h1>
+  <form id="payment-form" method="post" action="{% url 'payment:process' %}">
+    {% csrf_token %}
+    <div class="form-row">
+      <label for="card-number">Card Number</label>
+      <div id="card-number" class="form-control"></div>
+    </div>
+    <div class="form-row">
+      <label for="cvv">CVV</label>
+      <div id="cvv" class="form-control"></div>
+    </div>
+    <div class="form-row">
+      <label for="expiration-date">Expiration Date</label>
+      <div id="expiration-date" class="form-control"></div>
+    </div>
+    <input type="hidden" id="nonce" name="payment_method_nonce" value="">
+    <button type="submit" class="btn btn-primary mt-4">Pay</button>
+  </form>
+{% endblock %}
+  <!-- Load the required client component. -->
+  <script src="https://js.braintreegateway.com/web/3.78.2/js/client.min.js"></script>
+  <!-- Load Hosted Fields component. -->
+  <script src="https://js.braintreegateway.com/web/3.78.2/js/hosted-fields.min.js"></script>
+  <script>
+    braintree.client.create({
+      authorization: '{{ client_token }}'
+    }, function (clientErr, clientInstance) {
+      if (clientErr) {
+        console.error(clientErr);
+        return;
+      }
+
+      braintree.hostedFields.create({
+        client: clientInstance,
+        styles: {
+          'input': {'font-size': '14px', 'color': '#3A3A3A'},
+          ':focus': {'color': 'black'},
+          '.valid': {'color': 'green'},
+          '.invalid': {'color': 'red'}
+        },
+        fields: {
+          number: {
+            selector: '#card-number',
+            placeholder: '4111 1111 1111 1111'
+          },
+          cvv: {
+            selector: '#cvv',
+            placeholder: '123'
+          },
+          expirationDate: {
+            selector: '#expiration-date',
+            placeholder: 'MM/YY'
+          }
+        }
+      }, function (hostedFieldsErr, hostedFieldsInstance) {
+        if (hostedFieldsErr) {
+          console.error(hostedFieldsErr);
+          return;
+        }
+
+        var form = document.getElementById('payment-form');
+        var submit = document.querySelector('button[type="submit"]');
+
+        submit.removeAttribute('disabled');
+
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+
+          hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+            if (tokenizeErr) {
+              console.error(tokenizeErr);
+              return;
+            }
+
+            // set nonce to send to the server
+            document.getElementById('nonce').value = payload.nonce;
+            // submit form
+            document.getElementById('payment-form').submit();
+          });
+        }, false);
+      });
+    });
+
+    // Handle successful payment response from server
+    var successUrl = "{% url 'payment:done' %}";
+    var handleSuccess = function (response) {
+      if (response.success) {
+        window.location.href = successUrl;

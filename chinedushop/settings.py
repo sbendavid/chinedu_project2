@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from braintree import Configuration, Environment
 
 load_dotenv()
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     'shop',
     'account',
     'cart',
+    'orders',
+    'payment',
 
     # 'social_django',
 ]
@@ -64,7 +67,9 @@ ROOT_URLCONF = 'chinedushop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'account/templates')], # I added the one template for account here you can add more
+        'DIRS': [os.path.join(BASE_DIR, 'account/templates'),
+                 os.path.join(BASE_DIR, 'payment/templates'), 
+                 os.path.join(BASE_DIR, 'templates')], # I added the one template for account here you can add more
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -151,3 +156,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 CART_SESSION_ID = 'cart'
+
+Configuration.configure(
+    Environment.Sandbox,
+    os.getenv("BRAINTREE_MERCHANT_ID"),
+    os.getenv("BRAINTREE_PUBLIC_KEY"),
+    os.getenv("BRAINTREE_PRIVATE_KEY")
+)

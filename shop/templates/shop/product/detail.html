@@ -4,28 +4,22 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-
 <div class="container my-5">
   <div class="row">
     <div class="col-md-6">
       <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="img-fluid">
     </div>
     <div class="col-md-6">
-      <h1 class="mb-3">
-        {{ product.name }}
-      </h1>
-      <h2 class="mb-3">
-        <a href="{{ product.category.get_absolute_url }}">{{product.category }}</a>
-      </h2>
-      <p class="lead font-weight-bold">${{ product.price }}</p>
-      <form action="{% url 'cart:cart_add' product.id %}" method="post">
+      <h1 class="mb-3">{{ product.name }}</h1>
+      <h2 class="mb-3"><a href="{{ product.category.get_absolute_url }}">{{product.category }}</a></h2>
+      <h3 class="mb-3">$ {{ product.price }}</h3>
+      <form action="{% url 'cart:cart_add' product.id %}" method="post" class="d-inline-block">
         {{ cart_product_form }}
         {% csrf_token %}
-        <input type="submit" value="Add to cart">
+        <button type="submit" class="btn btn-primary me-3">Add to cart</button>
       </form>
-      <p class="lead">{{ product.description|linebreaks }}</p>
+      <p class="mt-4">{{ product.description|linebreaks }}</p>
     </div>
   </div>
 </div>
-
 {% endblock %}
