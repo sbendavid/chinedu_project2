@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'payment',
 
     # 'social_django',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -91,8 +92,10 @@ WSGI_APPLICATION = 'chinedushop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'shopdb',
+        'USER': 'nedu',
+        'PASSWORD': 'chinedu101',
     }
 }
 
@@ -157,9 +160,15 @@ AUTHENTICATION_BACKENDS = [
 
 CART_SESSION_ID = 'cart'
 
-Configuration.configure(
-    Environment.Sandbox,
-    os.getenv("BRAINTREE_MERCHANT_ID"),
-    os.getenv("BRAINTREE_PUBLIC_KEY"),
-    os.getenv("BRAINTREE_PRIVATE_KEY")
-)
+# Configuration.configure(
+#     Environment.Sandbox,
+#     os.getenv("BRAINTREE_MERCHANT_ID"),
+#     os.getenv("BRAINTREE_PUBLIC_KEY"),
+#     os.getenv("BRAINTREE_PRIVATE_KEY")
+# )
+
+# Stripe settings
+STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_API_VERSION = os.getenv("STRIPE_API_VERSION")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")

@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.postgres.search import SearchVector
 from .models import Category, Product
 from cart.forms import CartAddProductForm
+from .forms import SearchForm
 
 # Create your views here.
 
@@ -33,3 +35,20 @@ def product_detail(request, id, slug):
         {'product': product,
          'cart_product_form': cart_product_form
          })
+
+def product_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Product.objects.annotate(
+                search=SearchVector('name'),
+                ).filter(search=query)
+    return render(request,
+                    'shop/product/search.html',
+                    {'form': form,
+                    'query': query,
+                    'results': results})
