@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from faker import Faker
 
 # Create your models here.
 
@@ -54,3 +55,25 @@ class Product(models.Model):
             'shop:product_detail',
             args=[self.id, self.slug]
             )
+
+
+# def create_fake_data(num_categories=5, num_products=50):
+#     fake = Faker()
+
+#     # Create categories
+#     for _ in range(num_categories):
+#         category = Category.objects.create(
+#             name=fake.word(),
+#             slug=fake.slug()
+#         )
+
+#     # Create products
+#     for _ in range(num_products):
+#         product = Product.objects.create(
+#             name=fake.word(),
+#             slug=fake.slug(),
+#             category=Category.objects.order_by('?').first(),
+#             description=fake.sentence(),
+#             price=fake.random_int(min=10, max=100),
+#             available=fake.boolean()
+#         )

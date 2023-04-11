@@ -153,10 +153,10 @@ LOGIN_REDIRECT_URL = 'account:dashboard'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-AUTHENTICATION_BACKENDS = [
-'django.contrib.auth.backends.ModelBackend',
-'account.authentication.EmailAuthBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+# 'django.contrib.auth.backends.ModelBackend',
+# 'account.authentication.EmailAuthBackend',
+# ]
 
 CART_SESSION_ID = 'cart'
 
