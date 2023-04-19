@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from braintree import Configuration, Environment
 
 load_dotenv()
 
@@ -44,12 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'shop',
-    'account',
-    'cart',
-    'orders',
-    'payment',
 
-    # 'social_django',
     'django.contrib.postgres',
 ]
 
@@ -68,9 +62,7 @@ ROOT_URLCONF = 'chinedushop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'account/templates'),
-                 os.path.join(BASE_DIR, 'payment/templates'), 
-                 os.path.join(BASE_DIR, 'templates')], # I added the one template for account here you can add more
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # I added the one template for account here you can add more
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,10 +138,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_REDIRECT_URL = 'account:dashboard'
-# LOGIN_URL = 'account:login'
-# LOGOUT_URL = 'account:logout'
-# LOGOUT_REDIRECT_URL = 'account:logout'
+# LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -159,16 +151,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # ]
 
 CART_SESSION_ID = 'cart'
-
-# Configuration.configure(
-#     Environment.Sandbox,
-#     os.getenv("BRAINTREE_MERCHANT_ID"),
-#     os.getenv("BRAINTREE_PUBLIC_KEY"),
-#     os.getenv("BRAINTREE_PRIVATE_KEY")
-# )
-
-# Stripe settings
-STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-STRIPE_API_VERSION = os.getenv("STRIPE_API_VERSION")
-STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")

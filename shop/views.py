@@ -1,8 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.postgres.search import SearchVector
-from .models import Category, Product
-from cart.forms import CartAddProductForm
-from .forms import SearchForm
+from .models import Category, Product, OrderItem
+from .forms import SearchForm, OrderCreateForm, CartAddProductForm
+from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from .cart import Cart
+
 
 # Create your views here.
 
@@ -52,3 +57,59 @@ def product_search(request):
                     {'form': form,
                     'query': query,
                     'results': results})
+
+@login_required
+def dashboard(request):
+    return render(
+        request, 'shop/product/dashboard.html',
+        {'section': 'dashboard'}
+        )
+
+@require_POST
+def cart_add(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    form = CartAddProductForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        cart.add(
+            product=product, 
+            quantity=cd['quantity'], 
+            update_quantity=cd['update'])
+    return redirect('cart_detail')
+
+def cart_remove(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.remove(product)
+    return redirect('cart_detail')
+
+def cart_detail(request):
+    cart = Cart(request)
+    for item in cart:
+        item['update_quantity_form'] = CartAddProductForm(
+            initial={'quantity': item['quantity'], 
+                     'update': True})
+    return render(request, 'cart/detail.html', {'cart': cart})
+
+def order_create(request):
+    cart = Cart(request)
+    if request.method == 'POST':
+        form = OrderCreateForm(request.POST)
+        if form.is_valid():
+            order = form.save()
+            for item in cart:
+                OrderItem.objects.create(order=order,
+                product=item['product'],
+                price=item['price'],
+                quantity=item['quantity'])
+            # clear the cart
+            cart.clear()
+        return render(request,
+                    'orders/order/created.html',
+                    {'order': order})
+    else:
+        form = OrderCreateForm()
+    return render(request, 
+                  'orders/order/create.html', 
+                  {'cart': cart, 'form': form})
