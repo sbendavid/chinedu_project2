@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'shop',
 
     'django.contrib.postgres',
+
+    'chartjs',
 ]
 
 MIDDLEWARE = [
