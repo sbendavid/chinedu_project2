@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.contrib import admin
 from django.http import JsonResponse
-from .models import Category, Product, Order, OrderItem
+from .models import Category, Product, Order, OrderItem, Customer
 from django.urls import path
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import json_script
@@ -100,3 +100,5 @@ class OrderAdmin(admin.ModelAdmin):
             .annotate(y=Count("id"))
             .order_by("-date")
         )
+
+admin.site.register(Customer)
