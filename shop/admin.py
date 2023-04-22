@@ -1,9 +1,8 @@
-from django.db.models import Count, F
+from django.db.models import Count
 from django.contrib import admin
 from django.http import JsonResponse
 from .models import Category, Product, Order, OrderItem
 from django.urls import path
-from chartjs.views import JSONView
 from django.core.serializers.json import DjangoJSONEncoder
 from django.template.defaultfilters import json_script
 from django.db.models.functions import TruncDay
