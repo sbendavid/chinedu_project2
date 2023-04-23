@@ -6,36 +6,37 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        {% if request.user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link{% if section == 'dashboard' %} active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link{% if section == 'shop' %} active{% endif %}" href="{% url 'product_list' %}">Shop</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link{% if section == 'search' %} active{% endif %}" href="{% url 'product_search' %}">Search</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link{% if section == 'cart' %} active{% endif %}" href="{% url 'cart_detail' %}">
-            <i class="bi bi-cart"></i>
-            {% with total_items=cart|length %}
-            {% if cart|length > 0 %}
-            {{ total_items }} item{{ total_items|pluralize }}
+        {% if user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'dashboard' %} active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'shop' %} active{% endif %}" href="{% url 'product_list' %}">Shop</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'search' %} active{% endif %}" href="{% url 'product_search' %}">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if section == 'cart' %} active{% endif %}" href="{% url 'cart_detail' %}">
+              <i class="bi bi-cart"></i>
+              {% with total_items=cart|length %}
+              {% if cart|length > 0 %}
+              {{ total_items }} item{{ total_items|pluralize }}
+              {% else %}
+              Empty
+              {% endif %}
+              {% endwith %}
+            </a>
+          </li>
+          <li class="nav-item">
+            {% if request.user.is_authenticated %}
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             {% else %}
-            Empty
+            <a class="nav-link{% if section == 'login' %} active{% endif %}" href="{% url 'login' %}">Login</a>
             {% endif %}
-            {% endwith %}
-          </a>
-        </li>
-        <li class="nav-item">
-          {% if request.user.is_authenticated %}
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-          {% else %}
-          <a class="nav-link{% if section == 'login' %} active{% endif %}" href="{% url 'login' %}">Login</a>
-          {% endif %}
-        </li>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>

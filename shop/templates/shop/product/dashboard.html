@@ -4,19 +4,31 @@
 
 {% block content %}
 
-<div class="container">
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <div class="card border-0 shadow">
-        <div class="card-header bg-primary text-white">
-          <h4 class="mb-0">Dashboard</h4>
-        </div>
-        <div class="card-body">
-          <p class="card-text">Welcome to your dashboard.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- dashboard.html -->
+    <h1>Dashboard</h1>
+
+    <h2>Most Common Items Sold</h2>
+    <ul>
+        {% for name, count in most_common_items %}
+            <li>{{ name }}: {{ count }}</li>
+        {% endfor %}
+    </ul>
+
+    {% comment %} <h2>Customer Distribution by Country</h2>
+    <ul>
+        {% for country, count in zip(customer_countries, customer_counts) %}
+            <li>{{ country }}: {{ count }}</li>
+        {% endfor %}
+    </ul> {% endcomment %}
+
+    <h2>Order Count and Total Amount by Date</h2>
+    <ul>
+        {% for date, count, amount in order_data %}
+        <li>{{ date }}: Order Count - {{ count }}, Total Amount - {{ amount }}</li>
+        {% endfor %}
+    </ul>
+    <h3>Bar Plot of Most Common Items Sold</h3>
+    <img src="data:image/png;base64,{{ plot_base64 }}" alt="Most Common Items Sold">
+    
 
 {% endblock %}
