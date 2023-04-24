@@ -1,9 +1,9 @@
 from decimal import Decimal
 from django.conf import settings
-from .models import Product
+from shop.models import Product
 
 
-class Cart(object):
+class Cart:
     def __init__(self, request):
         """
         Initialize the cart.
@@ -49,7 +49,6 @@ class Cart(object):
         product_ids = self.cart.keys()
         # get the product objects and add them to the cart
         products = Product.objects.filter(id__in=product_ids)
-
         cart = self.cart.copy()
         for product in products:
             cart[str(product.id)]['product'] = product
@@ -71,4 +70,3 @@ class Cart(object):
         # remove cart from session
         del self.session[settings.CART_SESSION_ID]
         self.save()
-
