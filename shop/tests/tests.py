@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from .models import Category, Product
+from shop.models import Category, Product
 
 
 # Create your tests here.
