@@ -78,8 +78,9 @@ class Command(BaseCommand):
 
         # Read data from CSV file
         csv_file_path = 'data/exoplanets.csv'  # Update this with the path to your CSV file
-        with open(csv_file_path, 'r') as file:
-            reader = csv.DictReader(file)
+        with open(csv_file_path, newline='', encoding="utf8") as file:
+            reader = csv.reader(file, delimiter=",")
+            next(reader)
             for row in reader:
                 # Extract data from CSV row
                 product_name = row[0]
