@@ -77,7 +77,7 @@ class Command(BaseCommand):
         #     products.append(product)
 
         # Read data from CSV file
-        csv_file_path = 'path/to/your/csv/file.csv'  # Update this with the path to your CSV file
+        csv_file_path = 'data/exoplanets.csv'  # Update this with the path to your CSV file
         with open(csv_file_path, 'r') as file:
             reader = csv.DictReader(file)
             for row in reader:
