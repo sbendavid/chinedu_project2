@@ -23,51 +23,51 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var ctx = document.getElementById('myChart').getContext('2d');
-var chartData = JSON.parse('{{ chart_data|safe }}');
-var chartLabels = chartData.map(function(data) { return data.date; });
-var chartPaidDataPoints = chartData.map(function(data) { return data.paid_count; });
-var chartUnpaidDataPoints = chartData.map(function(data) { return data.unpaid_count; });
-
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: chartLabels,
-        datasets: [{
-            label: 'Paid Orders',
-            data: chartPaidDataPoints,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-        }, {
-            label: 'Unpaid Orders',
-            data: chartUnpaidDataPoints,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                display: true,
-                title: {
+    var chartData = JSON.parse('{{ chart_data|safe }}');
+    var chartLabels = chartData.map(function(data) { return data.date; });
+    var chartPaidDataPoints = chartData.map(function(data) { return data.paid_count; });
+    var chartUnpaidDataPoints = chartData.map(function(data) { return data.unpaid_count; });
+    
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'Paid Orders',
+                data: chartPaidDataPoints,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Unpaid Orders',
+                data: chartUnpaidDataPoints,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
                     display: true,
-                    text: 'Date'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                display: true,
-                title: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
                     display: true,
-                    text: 'Order Count'
+                    title: {
+                        display: true,
+                        text: 'Order Count'
+                    }
                 }
             }
         }
-    }
-  });    
-});
+      });    
+    });
 </script>
 
 

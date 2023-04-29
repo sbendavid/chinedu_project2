@@ -1,7 +1,9 @@
 import random
 import decimal
 import csv
-from datetime import datetime
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
+from io import BytesIO
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
@@ -65,6 +67,14 @@ class Command(BaseCommand):
         # products = []
         # for i in range(5):
         #     product_name = fake.catch_phrase()
+        #     image_data = fake.binary(length=1024)  # Generate fake image data
+        #     image_file = ContentFile(image_data)    # Create a ContentFile from the image data
+        #     image_name = fake.file_name(extension='jpg')
+        #     uploaded_file = SimpleUploadedFile(
+        #         name=image_name, 
+        #         content=image_file.read(),
+        #         content_type='image/jpeg'
+        #     )
         #     product_slug = slugify(product_name)  # generate slug from category name
         #     if Product.objects.filter(slug=product_slug).exists():  # check if slug already exists, regenerate if needed
         #         product_slug = slugify(product_name)
@@ -72,7 +82,8 @@ class Command(BaseCommand):
         #         name=product_name,
         #         slug=product_slug,  # set the generated slug for the category
         #         price=int(decimal.Decimal(random.randrange(155, 899)) / 100),
-        #         category=random.choice(categories) # attach a random category to the product
+        #         category=random.choice(categories), # attach a random category to the product
+        #         image=uploaded_file
         #     )
         #     products.append(product)
 
@@ -87,12 +98,6 @@ class Command(BaseCommand):
                 product_slug = slugify(product_name)
                 if Product.objects.filter(slug=product_slug).exists():
                     product_slug = slugify(product_name)
-                
-                # # Create Category instance or get existing one
-                # category, created = Category.objects.get_or_create(
-                #     name=category_name,
-                #     slug=slugify(category_name)
-                # )
 
                 # Create Product instance
                 products = Product.objects.create(

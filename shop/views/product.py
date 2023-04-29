@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.core.paginator import Paginator
 from shop.models import Category, Product
 from shop.forms import CartAddProductForm, SearchForm
 from django.contrib.postgres.search import SearchVector
@@ -9,7 +10,11 @@ def product_list(request, category_slug=None):
     try:
         category = None
         categories = Category.objects.all()
-        products = Product.objects.filter(available=True)
+        product_l = Product.objects.filter(available=True)
+
+        paginator = Paginator(product_l, 9)
+        page_number = request.GET.get('page', 1)
+        products = paginator.page(page_number)
 
         if category_slug:
             category = get_object_or_404(

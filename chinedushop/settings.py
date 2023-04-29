@@ -44,8 +44,6 @@ INSTALLED_APPS = [
     
     'shop',
 
-    'django.contrib.postgres',
-
     'chartjs',
 ]
 
@@ -86,10 +84,8 @@ WSGI_APPLICATION = 'chinedushop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shopdb',
-        'USER': 'nedu',
-        'PASSWORD': 'chinedu101',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
