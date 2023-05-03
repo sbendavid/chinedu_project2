@@ -1,8 +1,32 @@
 from django.db import models
+from django.conf import settings
 from django.urls import reverse
-from faker import Faker
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    address = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.email}, {self.address}'
+
+    class Meta:
+        db_table = 'customer'
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Customer.objects.create(user=instance)
+    
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.customer.save()
 
 class Category(models.Model):
     name = models.CharField(max_length=200,
@@ -20,7 +44,7 @@ class Category(models.Model):
     
     def get_absolute_url(self):
         return reverse(
-            'shop:product_list_by_category',
+            'product_list_by_category',
             args=[self.slug]
             )
 
@@ -52,28 +76,56 @@ class Product(models.Model):
     
     def get_absolute_url(self):
         return reverse(
-            'shop:product_detail',
+            'product_detail',
             args=[self.id, self.slug]
             )
 
 
-# def create_fake_data(num_categories=5, num_products=50):
-#     fake = Faker()
+class Cart(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='carts')
+    quantity = models.IntegerField()
+    created_date = models.DateTimeField(auto_now_add=True)
 
-#     # Create categories
-#     for _ in range(num_categories):
-#         category = Category.objects.create(
-#             name=fake.word(),
-#             slug=fake.slug()
-#         )
+    def __str__(self):
+        return f'{self.product},{self.quantity},{self.created_date}'
 
-#     # Create products
-#     for _ in range(num_products):
-#         product = Product.objects.create(
-#             name=fake.word(),
-#             slug=fake.slug(),
-#             category=Category.objects.order_by('?').first(),
-#             description=fake.sentence(),
-#             price=fake.random_int(min=10, max=100),
-#             available=fake.boolean()
-#         )
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    address = models.CharField(max_length=250)
+    postal_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=100)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    paid = models.BooleanField(default=False)
+    class Meta:
+        ordering = ('-created',)
+
+    def __str__(self):
+        return 'Order {}'.format(self.id)
+    
+    def get_total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return '{}'.format(self.id)
+
+    def get_cost(self):
+        return self.price * self.quantity
+
+    def save(self, *args, **kwargs):
+        if not self.order.customer:
+            # Set a default customer value
+            self.order.customer = Customer.objects.first()
+            self.order.save()
+        super().save(*args, **kwargs)
+
+

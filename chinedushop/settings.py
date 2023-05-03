@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from braintree import Configuration, Environment
 
 load_dotenv()
 
@@ -44,13 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'shop',
-    'account',
-    'cart',
-    'orders',
-    'payment',
 
-    # 'social_django',
-    'django.contrib.postgres',
+    'chartjs',
 ]
 
 MIDDLEWARE = [
@@ -68,9 +62,7 @@ ROOT_URLCONF = 'chinedushop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'account/templates'),
-                 os.path.join(BASE_DIR, 'payment/templates'), 
-                 os.path.join(BASE_DIR, 'templates')], # I added the one template for account here you can add more
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # I added the one template for account here you can add more
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart', # Added context processor for the cart
+                'shop.context_processors.cart', # Added context processor for the cart
             ],
         },
     },
@@ -92,10 +84,8 @@ WSGI_APPLICATION = 'chinedushop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shopdb',
-        'USER': 'nedu',
-        'PASSWORD': 'chinedu101',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -135,6 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -146,10 +137,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-LOGIN_REDIRECT_URL = 'account:dashboard'
-# LOGIN_URL = 'account:login'
-# LOGOUT_URL = 'account:logout'
-# LOGOUT_REDIRECT_URL = 'account:logout'
+# LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/'
+LOGOUT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -159,16 +150,3 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # ]
 
 CART_SESSION_ID = 'cart'
-
-# Configuration.configure(
-#     Environment.Sandbox,
-#     os.getenv("BRAINTREE_MERCHANT_ID"),
-#     os.getenv("BRAINTREE_PUBLIC_KEY"),
-#     os.getenv("BRAINTREE_PRIVATE_KEY")
-# )
-
-# Stripe settings
-STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-STRIPE_API_VERSION = os.getenv("STRIPE_API_VERSION")
-STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+    <h1>Order Details</h1>
+
+    <div class="text-right">
+        <a href="{% url 'order_list' %}" class="btn btn-primary">Back</a>
+    </div>
+        
+    <p>Order: 
+        This is order {{ order.id }} for {{ user.first_name }} {{ user.last_name }}. The order was placed on: {{ order.created }} 
+    </p>
+    
+    <p>The order includes these items:</p>
+    <ul>
+        {% for item in order_items %}
+            <li>
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Item: {{ item.product }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+   
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Details{% endblock %}
+
+{% block content %}
+  <h1>Customer Details</h1>
+  <div class="text-right">
+    <a href="{% url 'customer_list' %}" class="btn btn-primary">Back</a>
+  </div>
+  <p>
+    Customer: This is {{ user.first_name }} {{ user.last_name }} who lives at 
+    {{ user.customer.address }}. You can reach them at {{ user.email }}.
+  </p>
+  
+   
+{% endblock %}
