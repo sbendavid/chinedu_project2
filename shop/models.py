@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -31,8 +32,7 @@ class Customer(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=200,
     db_index=True)
-    slug = models.SlugField(max_length=200,
-    unique=True)
+    slug = models.SlugField(unique=True, default=uuid.uuid1)
 
     class Meta:
         ordering = ('name',)

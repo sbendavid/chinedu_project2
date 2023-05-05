@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from django.utils.text import slugify
+from django.core.files.images import ImageFile
 
 from shop.models import Cart, Customer, OrderItem, Order, Product, Category
 
@@ -50,13 +51,14 @@ class Command(BaseCommand):
             customer.address = str(customer.address[0])
             customer.save()
 
-        # create some categories
+        category_list = ['Rocky planets', 'super-earths', 'ice giants', 'gas giants', 'mini-Neptunes']
         categories = []
+
         for i in range(5):
-            category_name = fake.word()
+            category_name = random.choice(category_list)  # select a random category name from the list
             category_slug = slugify(category_name)  # generate slug from category name
             if Category.objects.filter(slug=category_slug).exists():  # check if slug already exists, regenerate if needed
-                category_slug = slugify(category_name)
+                category_slug = slugify(category_name + ' ' + str(i))
             category = Category.objects.create(
                 name=category_name,
                 slug=category_slug  # set the generated slug for the category
@@ -67,23 +69,19 @@ class Command(BaseCommand):
         products = []
         for i in range(5):
             product_name = fake.catch_phrase()
-            image_data = fake.binary(length=1024)  # Generate fake image data
-            image_file = ContentFile(image_data)    # Create a ContentFile from the image data
-            image_name = fake.file_name(extension='jpg')
-            uploaded_file = SimpleUploadedFile(
-                name=image_name, 
-                content=image_file.read(),
-                content_type='image/jpeg'
-            )
-            product_slug = slugify(product_name)  # generate slug from category name
-            if Product.objects.filter(slug=product_slug).exists():  # check if slug already exists, regenerate if needed
+            image_path = 'shop/static/img/AppBreweryWallpaper 7.jpg'  # replace with the path to your image file
+            with open(image_path, 'rb') as f:
+                image_data = f.read()
+            image_file = ContentFile(image_data)
+            product_slug = slugify(product_name)
+            if Product.objects.filter(slug=product_slug).exists():
                 product_slug = slugify(product_name)
             product = Product.objects.create(
                 name=product_name,
-                slug=product_slug,  # set the generated slug for the category
+                slug=product_slug,
                 price=int(decimal.Decimal(random.randrange(155, 899)) / 100),
-                category=random.choice(categories), # attach a random category to the product
-                image=uploaded_file
+                category=random.choice(categories),
+                image=image_file
             )
             products.append(product)
 
